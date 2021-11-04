@@ -1,18 +1,39 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div class="home">
+        <my-button class="m-5"
+                   @createGrid="createGrid"
+        >
+            Создать сетку
+        </my-button>
+    </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import {mapMutations} from 'vuex'
+import MyButton from "@/components/UI/MyButton";
 
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
+    name: 'Home',
+    components: {
+        MyButton
+    },
+    methods: {
+        ...mapMutations(['pushGrid']),
+        createGrid(id) {
+            let grid = {id:id}
+            console.log(grid)
+            this.pushGrid({grid})
+        }
+    }
 }
 </script>
+
+<style>
+
+.home {
+    align-items: center;
+    height: 800px;
+}
+
+</style>

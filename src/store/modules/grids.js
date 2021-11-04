@@ -5,11 +5,11 @@ export default {
     },
     getters: {
         getAllGrids: state => state.allGrids,
-        // getGridById: (state, {id}) => {
-        //     console.log(id)
-        //     let currGrid = state.allGrids.find(e => e.id === id)
-        //     return currGrid
-        // }
+        getGridById: (state) => (id) => {
+            console.log(state.allGrids)
+            return state.allGrids.find(grid =>
+                grid.id == id)
+        }
     },
     mutations: {
         setCurrGridById(state, {id}) {
