@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import grid from './modules/grids'
+import grids from './modules/grids'
 import createPersistedState from "vuex-persistedstate";
 
 
 Vue.use(Vuex)
 
 const gridsState = createPersistedState({
-  paths: ['grid']
+  paths: ['grids']
 })
 
 export default new Vuex.Store({
@@ -19,7 +19,7 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    grid
+    grids
   },
   plugins: [gridsState]
 })

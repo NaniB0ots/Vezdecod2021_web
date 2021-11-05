@@ -13,11 +13,14 @@
                             </div>
                             <template v-if="stage==grid.stages[0]">
                                 <template v-for="round in stage.teams.length/2">
-
                                     <ul class="match" :key="round">
                                         <li @mouseenter="addChooseBtn"
                                             @mouseleave="removeChooseBtn"
-                                            class="team">
+                                            @click="chooseTeam"
+                                            class="team"
+                                            :stage="`${stage.id}`"
+                                            :data-value="`${stage.teams[2 * round - 2].name}`"
+                                        >
                                             {{ stage.teams[2 * round - 2].name }}
                                             <span class="choose">
                                                 <b-icon-arrow-right/>
@@ -25,7 +28,11 @@
                                         </li>
                                         <li @mouseenter="addChooseBtn"
                                             @mouseleave="removeChooseBtn"
-                                            class="team">
+                                            @click="chooseTeam"
+                                            class="team"
+                                            :stage="`${stage.id}`"
+                                            :data-value="`${stage.teams[2 * round - 1].name}`"
+                                        >
                                             {{ stage.teams[2 * round - 1].name }}
                                             <span class="choose">
                                                 <b-icon-arrow-right/>
@@ -36,20 +43,32 @@
                             </template>
                             <template v-else>
                                 <div class="round">
-                                    <template v-for="round in grid.quantity/(stage.id*2)/2">
+                                    <template v-for="round in parseInt(grid.quantity/(stage.id*2)/2)">
                                         <ul class="match" :key="round">
                                             <li @mouseenter="addChooseBtn"
                                                 @mouseleave="removeChooseBtn"
-                                                class="team">
-                                                <!--                                            {{ stage.teams[2 * round - 2].name }}-->
+                                                class="team"
+                                                @click="chooseTeam"
+                                                :stage="`${stage.id}`"
+                                                :data-value="`${!!stage.teams[2 * round - 2]?stage.teams[2 * round - 2].name:''}`"
+                                            >
+                                                    <template v-if="!!stage.teams[2 * round - 2]">
+                                                        {{stage.teams[2 * round - 2].name}}
+                                                    </template>
                                                 <span class="choose">
                                                     <b-icon-arrow-right/>
                                                 </span>
                                             </li>
                                             <li @mouseenter="addChooseBtn"
                                                 @mouseleave="removeChooseBtn"
-                                                class="team">
-                                                <!--                                            {{ stage.teams[2 * round - 1].name }}-->
+                                                class="team"
+                                                @click="chooseTeam"
+                                                :stage="`${stage.id}`"
+                                                :data-value="`${!!stage.teams[2 * round - 1]?stage.teams[2 * round - 1].name:''}`"
+                                            >
+                                                <template v-if="!!stage.teams[2 * round - 1]">
+                                                    {{stage.teams[2 * round - 1].name}}
+                                                </template>
                                                 <span class="choose">
                                                     <b-icon-arrow-right class="choose_icon"/>
                                                 </span>
@@ -71,7 +90,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 
 export default {
     name: "Grid",
@@ -80,47 +99,74 @@ export default {
             grid: {}
         }
     },
-    computed: {},
+    computed: {
+        ...mapGetters(['getAllGrids', 'getGridById', 'getGrid']),
+    },
     methods: {
-        ...mapGetters(['getAllGrids', 'getGridById']),
-        addChooseBtn(event){
-            // console.log(event)
+        ...mapMutations(['updateGridByTeam', 'setCurrGridById']),
+        addChooseBtn(event) {
             let el = event.target
             let choose = event.target.lastElementChild
             choose.style.opacity = '1'
             el.classList.add('chosen')
 
         },
-        removeChooseBtn(event){
+        removeChooseBtn(event) {
             let el = event.target
             let choose = event.target.lastElementChild
             choose.style.opacity = '0'
             el.classList.remove('chosen')
+        },
+        chooseTeam(event) {
+            let cur_stage = parseInt(event.target.getAttribute('stage'))
+            let team_name = event.target.getAttribute('data-value')
+            console.log(this.grid)
+            console.log(cur_stage)
+            console.log(team_name)
+            if (team_name!='') {
+                let team = this.grid.stages[cur_stage].teams.find(t => {
+                    console.log(t.name)
+                    return t.name === team_name
+                })
+                console.log('Команда:', team)
+                let wonteam = JSON.parse(JSON.stringify(team))
+                wonteam.id = parseInt(team.id / 2)
+                console.log('Было', wonteam)
+                this.updateGridByTeam({stage: cur_stage + 1, team: wonteam})
+                this.grid = this.getGrid
+                // console.log(...team)
+            }
+
         }
     },
     beforeMount() {
         if (this.$store.getters.getGridById(this.$route.params.id)) {
-            this.grid = this.$store.getters.getGridById(this.$route.params.id)
+            let id = this.$route.params.id
+            this.setCurrGridById({id})
+            this.grid = this.getGrid
         }
     },
 }
 </script>
 
 <style scoped>
-.choose{
+.choose {
     position: absolute;
     right: 5px;
     opacity: 0;
 }
-.chosen{
+
+.chosen {
     background-color: lightgreen !important;
 }
-.round{
+
+.round {
     display: flex;
     height: 100%;
     flex-direction: column;
     justify-content: center;
 }
+
 .content {
     padding: 20px;
     background-color: rgba(225, 225, 225, 0.9);
