@@ -136,13 +136,13 @@ export default {
 
             //поле teams
             let teams = []
+            let teams_temp = []
             if (this.draw_selected === 1) {
-                console.log('Генерация')
                 teams = this.teams
                 const res = teams.reduce((acc, cur, idx) => {
                     console.log(idx)
-                    acc[idx-1] = {
-                        id: idx-1,
+                    acc[idx - 1] = {
+                        id: idx - 1,
                         rank: this.ranks[idx],
                         name: cur
                     }
@@ -153,10 +153,51 @@ export default {
                 }
                 teams.pop()
                 teams.sort((a, b) => a.rank > b.rank ? -1 : 1)
-                for (let i = 0; i < teams.length; i++) {
-                    teams[i].id = i
+
+                // for (let i = 0; i < teams.length; i++) {
+                //     console.log(i)
+                //     console.log(teams[i])
+                //     if (i%2==0){
+                //         teams_temp[i] = teams[i]
+                //         console.log('Первые')
+                //         console.log(teams[i])
+                //     } else {
+                //         console.log('Вторые')
+                //         console.log(teams[i])
+                //         // teams_temp[teams.length-i] = teams_temp[i]
+                //     }
+                // }
+                switch (this.quantity_options.find(o => o.value === this.quantity_selected).text) {
+                    case(8):
+                        teams_temp[0] = teams[0]
+                        teams_temp[1] = teams[2]
+                        teams_temp[2] = teams[4]
+                        teams_temp[3] = teams[6]
+                        teams_temp[4] = teams[7]
+                        teams_temp[5] = teams[5]
+                        teams_temp[6] = teams[3]
+                        teams_temp[7] = teams[1]
+                        break
+                    case (16):
+                        teams_temp[0] = teams[0]
+                        teams_temp[1] = teams[2]
+                        teams_temp[2] = teams[4]
+                        teams_temp[3] = teams[6]
+                        teams_temp[4] = teams[8]
+                        teams_temp[5] = teams[10]
+                        teams_temp[6] = teams[12]
+                        teams_temp[7] = teams[14]
+                        teams_temp[8] = teams[15]
+                        teams_temp[9] = teams[13]
+                        teams_temp[10] = teams[11]
+                        teams_temp[11] = teams[9]
+                        teams_temp[12] = teams[7]
+                        teams_temp[13] = teams[5]
+                        teams_temp[14] = teams[3]
+                        teams_temp[15] = teams[1]
+                        break
                 }
-                console.log(teams)
+                teams = teams_temp
             } else {
                 teams = this.teams.filter(item => {
                     return item ? item : false
@@ -211,7 +252,6 @@ export default {
             this.teams = []
             this.ranks = []
 
-            // console.log(grid)
             this.$emit('createGrid', grid)
             this.$router.push(`Grid/${this.id}`)
         },
