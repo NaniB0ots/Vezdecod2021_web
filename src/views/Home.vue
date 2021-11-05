@@ -20,9 +20,7 @@ export default {
     },
     methods: {
         ...mapMutations(['pushGrid']),
-        createGrid(id) {
-            let grid = {id:id}
-            console.log(grid)
+        createGrid(grid) {
             this.pushGrid({grid})
         }
     }
