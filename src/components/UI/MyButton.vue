@@ -26,7 +26,6 @@
                 </b-form-select>
             </b-form-group>
             <b-form-group :label="`Команда № ${n}`"
-                          label-for="teams_quantity"
                           v-for="n in this.quantity_options.find(o => o.value==quantity_selected).text"
                           :key="n"
                           invalid-feedback="Заполните обязательные поля!"
