@@ -6,9 +6,9 @@ export default {
     getters: {
         getAllGrids: state => state.allGrids,
         getGridById: (state) => (id) => {
-            console.log(state.allGrids)
-            return state.allGrids.find(grid =>
+            let grid = state.allGrids.find(grid =>
                 grid.id == id)
+            return grid
         }
     },
     mutations: {

@@ -86,20 +86,46 @@ export default {
                 return
             }
             this.id = Date.now()
-            console.log(this.teams)
+            let teams = this.teams.filter(item => {
+                return item ? item : false
+            }).map((item, idx) => {
+                return {
+                    id: idx,
+                    name: item,
+                    players: []
+                }
+            })
+            let stages_count
+            let stages = new Array()
+            switch (this.quantity_options.find(o => o.value === this.quantity_selected).text) {
+                case(8):
+                    stages_count = 3
+                    break
+                case (16):
+                    stages_count = 4
+                    break
+                case (32):
+                    stages_count = 5
+                    break
+            }
+            for (let i = 0; i < stages_count; i++) {
+                if (i == 0) {
+                    stages[i] = {
+                        id: i,
+                        teams: teams
+                    }
+                    continue
+                }
+                stages[i] = {
+                    id: i,
+                    teams: []
+                }
+            }
             let grid = {
                 id: this.id,
                 quantity: this.quantity_options.find(o => o.value === this.quantity_selected).text,
                 type: this.type_options.find(o => o.value === this.type_selected).text,
-                teams: this.teams.filter(item => {
-                    return item ? item : false
-                }).map((item, idx) => {
-                    return {
-                        id: idx,
-                        name: item,
-                        players: []
-                    }
-                })
+                stages: stages,
             }
             this.teams = []
             this.$emit('createGrid', grid)
