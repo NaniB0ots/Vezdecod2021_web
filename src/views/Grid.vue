@@ -82,7 +82,7 @@
                     </template>
                     <div class="stage d-flex flex-column">
                         <div class="stage-details">
-                            FINAL STAGE!
+                            CHAMPION!
                         </div>
                         <div class="round">
                             <ul class="match">

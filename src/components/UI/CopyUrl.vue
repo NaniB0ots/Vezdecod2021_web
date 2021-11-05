@@ -22,12 +22,9 @@ export default {
         copy() {
             let url = window.location.href
             console.log(url)
-            // document.execCommand('copy');
             const copyInput = document.createElement('input');
             copyInput.value = url;
-            copyInput.setAttribute('hidden', '');
-            // el.style.position = 'absolute';
-            // el.style.left = '-9999px';
+            copyInput.setAttribute('readonly', '');
             document.body.appendChild(copyInput);
             copyInput.select();
             document.execCommand('copy');
