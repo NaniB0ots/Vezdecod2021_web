@@ -3,6 +3,7 @@
         <div v-if="grid">
             <h1>
                 Турнирная сетка #{{ this.$route.params.id }}
+                <copy-url/>
             </h1>
             <div class="grid d-flex mt-3">
                 <template v-if="grid.stages">
@@ -52,9 +53,9 @@
                                                 :stage="`${stage.id}`"
                                                 :data-value="`${!!stage.teams[2 * round - 2]?stage.teams[2 * round - 2].name:''}`"
                                             >
-                                                    <template v-if="!!stage.teams[2 * round - 2]">
-                                                        {{stage.teams[2 * round - 2].name}}
-                                                    </template>
+                                                <template v-if="!!stage.teams[2 * round - 2]">
+                                                    {{ stage.teams[2 * round - 2].name }}
+                                                </template>
                                                 <span class="choose">
                                                     <b-icon-arrow-right/>
                                                 </span>
@@ -67,7 +68,7 @@
                                                 :data-value="`${!!stage.teams[2 * round - 1]?stage.teams[2 * round - 1].name:''}`"
                                             >
                                                 <template v-if="!!stage.teams[2 * round - 1]">
-                                                    {{stage.teams[2 * round - 1].name}}
+                                                    {{ stage.teams[2 * round - 1].name }}
                                                 </template>
                                                 <span class="choose">
                                                     <b-icon-arrow-right class="choose_icon"/>
@@ -79,6 +80,27 @@
                             </template>
                         </div>
                     </template>
+                    <div class="stage d-flex flex-column">
+                        <div class="stage-details">
+                            FINAL STAGE!
+                        </div>
+                        <div class="round">
+                            <ul class="match">
+                                <template v-if="!!grid.champ.name">
+                                    <li class="team champ"
+                                    >
+                                        {{ grid.champ.name }}
+                                    </li>
+                                </template>
+                                <template v-else>
+                                    <li class="team"
+                                    >
+
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
                 </template>
             </div>
         </div>
@@ -91,9 +113,11 @@
 
 <script>
 import {mapGetters, mapMutations} from 'vuex';
+import CopyUrl from "@/components/UI/CopyUrl";
 
 export default {
     name: "Grid",
+    components: {CopyUrl},
     data() {
         return {
             grid: {}
@@ -120,21 +144,16 @@ export default {
         chooseTeam(event) {
             let cur_stage = parseInt(event.target.getAttribute('stage'))
             let team_name = event.target.getAttribute('data-value')
-            console.log(this.grid)
-            console.log(cur_stage)
-            console.log(team_name)
-            if (team_name!='') {
+
+
+            if (team_name != '') {
                 let team = this.grid.stages[cur_stage].teams.find(t => {
-                    console.log(t.name)
                     return t.name === team_name
                 })
-                console.log('Команда:', team)
                 let wonteam = JSON.parse(JSON.stringify(team))
                 wonteam.id = parseInt(team.id / 2)
-                console.log('Было', wonteam)
                 this.updateGridByTeam({stage: cur_stage + 1, team: wonteam})
                 this.grid = this.getGrid
-                // console.log(...team)
             }
 
         }
@@ -159,7 +178,9 @@ export default {
 .chosen {
     background-color: lightgreen !important;
 }
-
+.champ {
+    background-color: lightgreen !important;
+}
 .round {
     display: flex;
     height: 100%;
@@ -189,7 +210,7 @@ export default {
     margin: 0;
     width: 100%;
     padding: 10px 0;
-    height: 60px;
+    /*height: 60px;*/
 }
 
 .team {

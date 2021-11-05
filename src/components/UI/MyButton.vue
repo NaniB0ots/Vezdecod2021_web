@@ -54,7 +54,7 @@ export default {
             type_selected: null,
             type_options: [
                 {value: null, text: 'Олимпийская'},
-                {value: 2, text: 'После двух поражений'}
+                {value: 2, text: 'После двух поражений', disabled: true}
             ],
             teams: []
 
@@ -67,9 +67,7 @@ export default {
             console.log(typeof this.quantity_options.find(o => o.value == this.quantity_selected).text)
             for (let i = 1; i < parseInt(this.quantity_options.find(o => o.value == this.quantity_selected).text) + 1; i++) {
 
-                console.log({'number': i, 'team': this.teams[i]})
                 if (!this.teams[i]) {
-                    console.log(this.teams[i])
                     valid = false
                 }
             }
@@ -126,6 +124,7 @@ export default {
                 quantity: this.quantity_options.find(o => o.value === this.quantity_selected).text,
                 type: this.type_options.find(o => o.value === this.type_selected).text,
                 stages: stages,
+                champ: {}
             }
             this.teams = []
             this.$emit('createGrid', grid)
